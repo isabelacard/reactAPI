@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { Outlet } from "react-router";
 
-type User = {
-    username: string;
-};
+import type { User } from "../../types/UserType";
 
 type AuthContextType = {
     isAuthenticated: boolean;

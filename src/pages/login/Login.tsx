@@ -1,8 +1,10 @@
+import type React from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router";
 
 import { useAuth } from "../../layout/Auth/Auth";
+import type { User } from "../../types/UserType";
 import { login } from "../../services/authService";
 
 export default function Login() {
@@ -10,7 +12,7 @@ export default function Login() {
     const navigate = useNavigate();
     const { setUser } = useAuth();
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
         const form = formRef.current;
@@ -20,9 +22,13 @@ export default function Login() {
             const password = formData.get("password") as string;
             console.info(username, password);
             // Lógica de verificación de login
-            login (username, password);
-            //setUser({ username: username as string });
-            //navigate("/feed");
+            const data = await login(username, password);
+            if (data.ok) {
+                setUser(data.user as User);
+                navigate("/feed");
+            } else {
+                alert("login failed: " + data.message);
+            }
         }
     };
 

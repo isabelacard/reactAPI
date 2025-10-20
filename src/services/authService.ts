@@ -1,13 +1,27 @@
-const login = async (username : string, password : string) => {
-    const response = await fetch("http://localhost:3001/api/auth/login", {
-        method: "POST" ,
+import type { LoginResponse } from "../types/AuthType";
+
+import axios from "./axios";
+
+const login = async (username: string, password: string): Promise<LoginResponse> => {
+    const response = await fetch("http://localhost:4567/api/auth/login", {
+        method: "POST",
         headers: {
-            "Content-Type": "application/json",
+            "Content-type": "application/json",
         },
-        body: JSON.stringify({username, password}),
+        body: JSON.stringify({ username, password }),
     });
-    const data = await response.json(); 
-    console.info(data);
+    const data = await response.json();
+    return data;
 };
 
-export { login };
+const loginAxios = async (username: string, password: string): Promise<LoginResponse> => {
+    try {
+        const response = await axios.post<LoginResponse>("/auth/login", { username, password });
+        return response.data;
+    } catch (error) {
+        console.error("Error logging in:", error);
+        return { ok: false, message: "Network error" };
+    }
+};
+
+export { login, loginAxios };
